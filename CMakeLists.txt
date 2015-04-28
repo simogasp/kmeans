@@ -5,8 +5,11 @@ option(WITH_CUDA   		"Build the cuda example"            ON)
 option(WITH_OPENMP  	"Build the OpenMP example" 			ON)
 option(WITH_MPI   		"Build the OpenMP example" 			OFF)
 
-add_definitions(-DBLOCK_SHARED_MEM_OPTIMIZATION=1)
-set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS} ${BLOCK_SHARED_MEM_OPTIMIZATION})
+if(NOT DEFINED BLOCK_SHARED_MEM_OPTIMIZATION)
+	set (BLOCK_SHARED_MEM_OPTIMIZATION=1)
+endif()
+add_definitions(-DBLOCK_SHARED_MEM_OPTIMIZATION=${BLOCK_SHARED_MEM_OPTIMIZATION})
+set(CMAKE_C_FLAGS ${CMAKE_C_FLAGS})
 
 
 #------   sequential version -----------------------------------------
@@ -25,7 +28,7 @@ if(WITH_CUDA)
 	if(CUDA_FOUND)
 		
 		set(CUDA_C_SRC  cuda_main.cu cuda_io.cu cuda_wtime.cu cuda_kmeans.cu)
-		set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} --ptxas-options=-v ${BLOCK_SHARED_MEM_OPTIMIZATION})
+		set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS} --ptxas-options=-v )
 		cuda_add_executable(cuda_main ${CUDA_C_SRC})
 
 	else()
